@@ -25,7 +25,7 @@ shinyServer(function(input, output) {
     numExecutorPerNode <- max(1,numAvailExecutors/input$numInstanceId)   
     memPerExecutor <- memoryPerInstance/numExecutorPerNode      # -- executor-memory 
     memWOverhead <- memPerExecutor * (1 - input$memOverheadId/100) 
-    numParitions <- memPerExecutor * as.integer(input$numExecCoreId) # -- num partitions
+    numParitions <- numAvailExecutors * as.integer(input$numExecCoreId) # -- num partitions
     
     # save it to a dataframe
     namesList = c("num-executors","executor-memory(GB)","executor-cores",
@@ -59,7 +59,7 @@ shinyServer(function(input, output) {
     numExecutorPerNode <- max(1,numAvailExecutors/input$numInstanceId)   
     memPerExecutor <- memoryPerInstance/numExecutorPerNode      # -- executor-memory 
     memWOverhead <- memPerExecutor * (1 - input$memOverheadId/100) 
-    numParitions <- memPerExecutor * as.integer(input$numExecCoreId) # -- num partitions
+    numParitions <- numAvailExecutors * as.integer(input$numExecCoreId) # -- num partitions
     commandString <- sprintf("spark-submit --class <CLASS_NAME> --num-executors %s --executor-cores %s --executor-memory %10.0fMB --driver-memory %10.0fMB --master yarn --deploy-mode client",
                              numAvailExecutors, input$numExecCoreId, memWOverhead * 1000,memoryPerInstance*0.6*.9*1000)
     # driver memory = The default values of spark.storage.memoryFraction and spark.storage.safetyFraction are respectively 0.6 and 0.9 so the real executorMemory
