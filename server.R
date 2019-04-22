@@ -48,4 +48,21 @@ shinyServer(function(input, output) {
   
   output$memId <- renderText({paste("Memory (GB): ", as.character(instance[instance$Model == input$instanceListId,3]))})
   
+  output$submitId <- renderText({
+    recNumCorePerExecutor <- as.integer(input$numExecCoreId)
+    vCorePerInstance <- as.integer(as.character(instance[instance$Model == input$instanceListId,2]))
+    memoryPerInstance <-  as.integer(as.character(instance[instance$Model == input$instanceListId,3]))
+    totalCore <- as.integer(input$numInstanceId) * vCorePerInstance
+    totalMem <- as.integer(input$numInstanceId) * memoryPerInstance
+    totalAvailCores <- (vCorePerInstance - input$coreYarnId) * input$numInstanceId
+    numAvailExecutors <- max(1,ceiling(totalAvailCores/recNumCorePerExecutor) - input$excecutorAMId) # -num-executors
+    numExecutorPerNode <- max(1,numAvailExecutors/input$numInstanceId)   
+    memPerExecutor <- memoryPerInstance/numExecutorPerNode      # -- executor-memory 
+    memWOverhead <- memPerExecutor * (1 - input$memOverheadId/100) 
+    numParitions <- memPerExecutor * as.integer(input$numExecCoreId) # -- num partitions
+    commandString <- sprintf("spark-submit --class <CLASS_NAME> --num-executors %s --executor-cores %s --executor-memory %10.0fMB --driver-memory %10.0fMB --master yarn --deploy-mode client",
+                             numAvailExecutors, input$numExecCoreId, memWOverhead * 1000,memoryPerInstance*.9*1000)
+#    commandString <- paste("<font color=\"#FF0000\"><b>", commandString, "</b></font>")
+    })
+  
 })

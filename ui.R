@@ -18,9 +18,9 @@ shinyUI(fluidPage(
   # Application title
   titlePanel("spark-submit auto configuration with EC2 instance type (LiangK)"),
   hr(),
-  p("This application is to select the best spark submit parameters for EMR jobs based on number of instances and the EMR instance type."),
-  p("spark-submit --class <CLASS_NAME> --num-executors ? --executor-cores ? --executor-memory ? ...."),
-  
+  p("This application is to select the best spark submit parameters for EMR jobs based on number of instances and the EMR instance type. Special thanks to PengyuW."),
+#  p("spark-submit --class <CLASS_NAME> --num-executors ? --executor-cores ? --executor-memory ? ...."),
+  textOutput("submitId",container = if(inline) span else div, inline=FALSE),
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
@@ -33,11 +33,11 @@ shinyUI(fluidPage(
        sliderInput("numInstanceId",
                    "number of instances (Nodes)",
                    min = 1,
-                   max = 200,
+                   max = 500,
                    value = 100,
                    step = 5),
        sliderInput("numExecCoreId",
-                   "Number of executor cores per each executor (5 recommended)",
+                   "Number of executor cores per each executor (max 5 recommended)",
                    min = 1,
                    max = 10,
                    value = 5,
@@ -46,7 +46,7 @@ shinyUI(fluidPage(
        sliderInput("memOverheadId",
                    "Memory overhead % (7% by default,max 20%)",
                    min = 1,
-                   max=30,
+                   max=20,
                    value = 7,
                    step = 1
                    ),
