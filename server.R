@@ -17,7 +17,7 @@ shinyServer(function(input, output) {
   output$results <- renderTable({
     recNumCorePerExecutor <- as.integer(input$numExecCoreId)
     vCorePerInstance <- as.integer(as.character(instance[instance$Model == input$instanceListId,2]))
-    memoryPerInstance <-  as.integer(as.character(instance[instance$Model == input$instanceListId,3]))
+    memoryPerInstance <-  as.numeric(as.character(instance[instance$Model == input$instanceListId,3]))
     totalCore <- as.integer(input$numInstanceId) * vCorePerInstance
     totalMem <- as.integer(input$numInstanceId) * memoryPerInstance
     totalAvailCores <- (vCorePerInstance - input$coreYarnId) * input$numInstanceId
@@ -51,7 +51,7 @@ shinyServer(function(input, output) {
   output$submitId <- renderText({
     recNumCorePerExecutor <- as.integer(input$numExecCoreId)
     vCorePerInstance <- as.integer(as.character(instance[instance$Model == input$instanceListId,2]))
-    memoryPerInstance <-  as.integer(as.character(instance[instance$Model == input$instanceListId,3]))
+    memoryPerInstance <-  as.numeric(as.character(instance[instance$Model == input$instanceListId,3]))
     totalCore <- as.integer(input$numInstanceId) * vCorePerInstance
     totalMem <- as.integer(input$numInstanceId) * memoryPerInstance
     totalAvailCores <- (vCorePerInstance - input$coreYarnId) * input$numInstanceId
